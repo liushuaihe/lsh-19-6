@@ -171,9 +171,21 @@ export const useStore = create<AppState>()(
         ]),
         affectedNodeIds: [],
 
-        selectProduct: (id) =>
-          set({ selectedProductId: id, selectedNodeId: null }),
-        selectNode: (id) => set({ selectedNodeId: id }),
+        selectProduct: (id) => {
+          const rootNode = get().nodes.find(
+            (n) => n.productId === id && n.parentId === null
+          );
+          set({
+            selectedProductId: id,
+            selectedNodeId: null,
+            expandedNodeIds: rootNode ? new Set([rootNode.id]) : new Set(),
+          });
+        },
+        selectNode: (id) => {
+          const node = get().nodes.find((n) => n.id === id);
+          if (!node || node.productId !== get().selectedProductId) return;
+          set({ selectedNodeId: id });
+        },
         toggleNode: (id) =>
           set((state) => {
             const next = new Set(state.expandedNodeIds);

@@ -264,6 +264,7 @@ export default function IngredientTree() {
 
 function NodeDetailPanel() {
   const selectedNodeId = useStore((s) => s.selectedNodeId);
+  const selectedProductId = useStore((s) => s.selectedProductId);
   const nodes = useStore((s) => s.nodes);
   const materials = useStore((s) => s.materials);
   const conversions = useStore((s) => s.conversions);
@@ -276,7 +277,9 @@ function NodeDetailPanel() {
     "斤", "两",
   ];
 
-  const node = nodes.find((n) => n.id === selectedNodeId);
+  const node = nodes.find(
+    (n) => n.id === selectedNodeId && n.productId === selectedProductId
+  );
   if (!node) return null;
 
   const computedCost = calculateCost(node.id, nodes, materials, conversions);
